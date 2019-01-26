@@ -15,9 +15,11 @@ const AppLayout = styled.div`
 export const TodoApp = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
 
-    const [lastTodoId, setLastTodoId] = useState(0);
-
     const [currentFilter, setCurrentFilter] = useState(TodoFilterType.ALL);
+
+    const addTodo = (newTodo: Todo) => {
+        setTodos([...todos, newTodo]);
+    };
 
     const deleteTodo = (todoId: number) => {
         setTodos(todos.filter(todo => todo.id !== todoId));
@@ -47,16 +49,7 @@ export const TodoApp = () => {
     return (
         <AppLayout>
             <h2>Todo app</h2>
-            <AddTodo
-                onAddTodo={newTodo => {
-                    const newTodoId = lastTodoId + 1;
-                    setTodos([
-                        ...todos,
-                        { id: newTodoId, text: newTodo, completed: false }
-                    ]);
-                    setLastTodoId(newTodoId);
-                }}
-            />
+            <AddTodo onAddTodo={addTodo} />
             <TodoFilter
                 currentFilter={currentFilter}
                 setCurrentFilter={setCurrentFilter}
