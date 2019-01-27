@@ -12,12 +12,24 @@ const AppLayout = styled.div`
     align-items: center;
 `;
 
-type TodoAction = 'ADD_TODO' | 'DELETE_TODO' | 'CHANGE_COMPLETED_TODO';
+type AddAction = {
+    type: 'ADD_TODO';
+    payload: Todo;
+};
 
-const todosReducer = (
-    state: Todo[],
-    action: { type: TodoAction; payload: any }
-) => {
+type DeleteAction = {
+    type: 'DELETE_TODO';
+    payload: number;
+};
+
+type ChangeCompletedAction = {
+    type: 'CHANGE_COMPLETED_TODO';
+    payload: number;
+};
+
+type TodoAction = AddAction | DeleteAction | ChangeCompletedAction;
+
+const todosReducer = (state: Todo[], action: TodoAction) => {
     switch (action.type) {
         case 'ADD_TODO':
             return [...state, action.payload];
