@@ -12,7 +12,7 @@ export type TodoListProps = {
 const DeleteIcon = styled.i.attrs({
     className: 'fas fa-trash'
 })`
-    &:hover {
+    & :hover {
         cursor: pointer;
         background-color: red;
     }

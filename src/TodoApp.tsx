@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Todo } from './Todo';
 import { AddTodo } from './AddTodo';
 import { TodoList } from './TodoList';
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import { TodoFilter, TodoFilterType } from './TodoFilter';
 
 const AppLayout = styled.div`
@@ -12,27 +12,41 @@ const AppLayout = styled.div`
     align-items: center;
 `;
 
+type TodoAction = 'ADD_TODO' | 'DELETE_TODO' | 'CHANGE_COMPLETED_TODO';
+
+const todosReducer = (
+    state: Todo[],
+    action: { type: TodoAction; payload: any }
+) => {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return [...state, action.payload];
+        case 'CHANGE_COMPLETED_TODO':
+            return state.map(todo =>
+                todo.id === action.payload
+                    ? { ...todo, completed: !todo.completed }
+                    : todo
+            );
+        case 'DELETE_TODO':
+            return state.filter(todo => todo.id !== action.payload);
+    }
+};
+
 export const TodoApp = () => {
-    const [todos, setTodos] = useState<Todo[]>([]);
+    const [todos, dispatch] = useReducer(todosReducer, []);
 
     const [currentFilter, setCurrentFilter] = useState(TodoFilterType.ALL);
 
     const addTodo = (newTodo: Todo) => {
-        setTodos([...todos, newTodo]);
+        dispatch({ type: 'ADD_TODO', payload: newTodo });
     };
 
     const deleteTodo = (todoId: number) => {
-        setTodos(todos.filter(todo => todo.id !== todoId));
+        dispatch({ type: 'DELETE_TODO', payload: todoId });
     };
 
     const changeCompletedTodo = (todoId: number) => {
-        setTodos(
-            todos.map(todo =>
-                todo.id === todoId
-                    ? { ...todo, completed: !todo.completed }
-                    : todo
-            )
-        );
+        dispatch({ type: 'CHANGE_COMPLETED_TODO', payload: todoId });
     };
 
     const applyCurrentFilter = (): Todo[] => {
