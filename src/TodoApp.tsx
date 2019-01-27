@@ -41,6 +41,8 @@ const todosReducer = (state: Todo[], action: TodoAction) => {
             );
         case 'DELETE_TODO':
             return state.filter(todo => todo.id !== action.payload);
+        default:
+            return assertNever(action);
     }
 };
 
@@ -87,4 +89,8 @@ export const TodoApp = () => {
             />
         </AppLayout>
     );
+};
+
+const assertNever = (x: never): never => {
+    throw new Error('Unexpected object: ' + x);
 };
